@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Button registerButton;
     private Button loginButton;
+    private Button registeredUsersButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,18 @@ public class MainActivity extends AppCompatActivity {
 
         registerButton = findViewById(R.id.register_button);
         loginButton = findViewById(R.id.login_button);
+        registeredUsersButton = findViewById(R.id.registered_users_button);
+
+        registeredUsersButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                //link to the next activity
+                Intent intent = new Intent(getApplicationContext(), RegisteredUsersActivity.class);
+                //start the next activity
+                startActivity(intent);
+            }
+        });
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!authenticated) {
                     // Display that the username and password is incorrect
+                    Toast toast=Toast.makeText(getApplicationContext(),"Invalid username or password",Toast.LENGTH_SHORT);
+                    toast.setMargin(50,50);
+                    toast.show();
                     return;
                 }
 
@@ -85,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.commit();
 
                 //link to the next activity
-                Intent intent = new Intent(getApplicationContext(), Register.class);
+                Intent intent = new Intent(getApplicationContext(), RegisterActivity.class);
                 //start the next activity
                 startActivity(intent);
             }

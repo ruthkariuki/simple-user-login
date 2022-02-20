@@ -16,17 +16,16 @@ import android.widget.EditText;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link Register#newInstance} factory method to
+ * Use the {@link RegisterActivity#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Register extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -37,7 +36,7 @@ public class Register extends AppCompatActivity {
     private String mParam1;
     private String mParam2;
 
-    public Register() {
+    public RegisterActivity() {
         // Required empty public constructor
     }
 
@@ -50,8 +49,8 @@ public class Register extends AppCompatActivity {
      * @return A new instance of fragment login.
      */
     // TODO: Rename and change types and number of parameters
-    public static Register newInstance(String param1, String param2) {
-        Register fragment = new Register();
+    public static RegisterActivity newInstance(String param1, String param2) {
+        RegisterActivity fragment = new RegisterActivity();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);

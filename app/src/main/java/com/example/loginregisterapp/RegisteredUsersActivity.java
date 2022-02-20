@@ -9,21 +9,22 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link UserDetailsActivity#newInstance} factory method to
+ * Use the {@link RegisteredUsersActivity#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserDetailsActivity extends AppCompatActivity {
+public class RegisteredUsersActivity extends AppCompatActivity {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -34,7 +35,7 @@ public class UserDetailsActivity extends AppCompatActivity {
     private String mParam1;
     private String mParam2;
 
-    public UserDetailsActivity() {
+    public RegisteredUsersActivity() {
         // Required empty public constructor
     }
 
@@ -44,11 +45,11 @@ public class UserDetailsActivity extends AppCompatActivity {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment UserDetails.
+     * @return A new instance of fragment RegisteredUsers.
      */
     // TODO: Rename and change types and number of parameters
-    public static UserDetailsActivity newInstance(String param1, String param2) {
-        UserDetailsActivity fragment = new UserDetailsActivity();
+    public static RegisteredUsersActivity newInstance(String param1, String param2) {
+        RegisteredUsersActivity fragment = new RegisteredUsersActivity();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -58,44 +59,39 @@ public class UserDetailsActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_user_details);
-
-        Bundle extras = getIntent().getExtras();
-        String username = extras.getString("username");
+        setContentView(R.layout.fragment_registered_users);
 
         SharedPreferences sharedPreferences = getSharedPreferences("ke.co.ba", MODE_PRIVATE);
 
         String users = sharedPreferences.getString("users", "");
 
         Gson gson = new Gson();
+        if (null == users || "".equals(users)) {
+            List<User> userList = new ArrayList<>();
+
+            users = gson.toJson(userList);
+        }
+
         Type type = new TypeToken<List<User>>() {
         }.getType();
         List<User> userList = gson.fromJson(users, type);
 
-        User loggedInUser = null;
-        for(User user: userList) {
-            if (user.getUsername().equalsIgnoreCase(username)) {
-                loggedInUser = user;
-                break;
-            }
+        String[] usernames = new String[userList.size()];
+
+        int i = 0;
+        for (User user : userList) {
+            usernames[i++] = user.getUsername();
         }
 
-        TextView firstNameTV = (TextView) findViewById(R.id.firstNameTxt);
-        firstNameTV.setText(loggedInUser.getFirstname());
-
-        TextView lastNameTV = (TextView) findViewById(R.id.lastNameTxt);
-        lastNameTV.setText(loggedInUser.getLastname());
-
-        TextView idNumberTV = (TextView) findViewById(R.id.idNumberTxt);
-        idNumberTV.setText(loggedInUser.getIdnumber());
-
-        TextView usernameTV = (TextView) findViewById(R.id.usernameTxt);
-        usernameTV.setText(loggedInUser.getUsername());
+        ListView listView = findViewById(R.id.list);
+        ArrayAdapter<String> arr;
+        arr = new ArrayAdapter<String>(this, R.layout.simple_list_item_1, usernames);
+        listView.setAdapter(arr);
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_user_details, container, false);
+        return inflater.inflate(R.layout.fragment_registered_users, container, false);
     }
 }
