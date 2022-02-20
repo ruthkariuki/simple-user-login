@@ -1,5 +1,7 @@
 package com.example.loginregisterapp;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +10,16 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,10 +63,59 @@ public class Register extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_register);
-//        if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
-//        }
+
+        Button registerButton = (Button) findViewById(R.id.register_btn);
+
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                EditText firstNameET = (EditText) findViewById(R.id.editTextTextFirstName);
+                String firstname = firstNameET.getText().toString();
+
+                EditText lastNameET = (EditText) findViewById(R.id.editTextTextLastName);
+                String lastname = lastNameET.getText().toString();
+
+                EditText idNumberET = (EditText) findViewById(R.id.editTextTextIDNumber);
+                String idNumber = idNumberET.getText().toString();
+
+                EditText usernameET = (EditText) findViewById(R.id.editTextTextUsername);
+                String username = usernameET.getText().toString();
+
+                EditText passwordET = (EditText) findViewById(R.id.editTextTextPassword);
+                String password = passwordET.getText().toString();
+
+                SharedPreferences sharedPreferences = getSharedPreferences("ke.co.ba", MODE_PRIVATE);
+
+                String users = sharedPreferences.getString("users", "");
+
+                Gson gson = new Gson();
+                if (null == users || "".equals(users)) {
+                    List<User> userList = new ArrayList<>();
+
+                    users = gson.toJson(userList);
+                }
+
+                Type type = new TypeToken<List<User>>() {
+                }.getType();
+                List<User> userList = gson.fromJson(users, type);
+
+                userList.add(new User(username, password, firstname, lastname, idNumber));
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("users", gson.toJson(userList));
+                editor.commit();
+
+                System.out.println("*************************************");
+                System.out.println(sharedPreferences.getString("users", ""));
+                System.out.println("*************************************");
+
+                //link to the next activity
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                //start the next activity
+                startActivity(intent);
+            }
+        });
     }
 
 //    @Override
